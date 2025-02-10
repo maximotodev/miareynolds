@@ -1,14 +1,15 @@
+"use client";
 import EventBox from "./EventBox";
 import SectionHeader from "../SectionHeader";
+import { useState, useEffect } from "react";
 
-const getEvents = async () => {
-  const res = await fetch("http://127.0.0.1:4000/events");
-  return res.json();
-};
-
-const Events = async () => {
-  const events = await getEvents();
-
+const Events = () => {
+  const [events, setEvents] = useState([]);
+  useEffect(() => {
+    fetch("/api/events")
+      .then((response) => response.json())
+      .then((data) => setEvents(data));
+  }, []);
   return (
     <section className="section" id="tours">
       <div className="container mx-auto">

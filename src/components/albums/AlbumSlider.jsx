@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import useSWR from "swr";
 import Image from "next/image";
 
 import { AudioPlayer } from "react-audio-play";
@@ -14,15 +13,18 @@ import "swiper/css";
 import "swiper/css/effect-coverflow";
 import "swiper/css/pagination";
 
-// fetcher
-const fetcher = (url) => fetch(url).then((res) => res.json());
-
 const AlbumSlider = () => {
-  const { data, error } = useSWR("http://127.0.0.1:4000/albums", fetcher);
   const [thumbsSwiper, setThumbsSwiper] = useState(null);
+  const [album, setAlbum] = useState([]);
 
-  if (error) return "Failed to fetch data";
-  if (!data) return "Loading...";
+  useEffect(() => {
+    fetch("/api/albums")
+      .then((response) => response.json())
+      .then((data) => setAlbum(data));
+  }, []);
+
+  // if (error) return "Failed to fetch data";
+  if (!album) return "Loading...";
 
   return (
     <>
@@ -45,7 +47,7 @@ const AlbumSlider = () => {
         }}
         className="album-slider"
       >
-        {data.map((album) => {
+        {album.map((album) => {
           return (
             <SwiperSlide key={album.id} className="mb-12">
               <div className="w-full bg-secondary/80 rounded-[10px] flex flex-col xl:flex-row items-center p-6 xl:p-12 gap-x-12">
@@ -137,7 +139,7 @@ const AlbumSlider = () => {
         watchSlidesProgress={true}
         className="thumb-slider"
       >
-        {data?.map((thumb, index) => {
+        {album?.map((thumb, index) => {
           return (
             <SwiperSlide
               key={index}

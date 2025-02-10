@@ -1,13 +1,15 @@
+"use client";
+import { useState, useEffect } from "react";
 import SectionHeader from "../SectionHeader";
 import PostList from "./PostList";
 
-const getPosts = async () => {
-  const res = await fetch("http://127.0.0.1:4000/posts");
-  return res.json();
-};
-
-const Blog = async () => {
-  const posts = await getPosts();
+const Blog = () => {
+  const [posts, setPosts] = useState([]);
+  useEffect(() => {
+    fetch("/api/posts")
+      .then((response) => response.json())
+      .then((data) => setPosts(data));
+  }, []);
   return (
     <section className="section" id="blog">
       <div className="container mx-auto">
